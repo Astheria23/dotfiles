@@ -65,11 +65,21 @@ install_tmux() {
     
     create_symlink "$src_tmux_conf" "$tmux_conf"
     
-    # Install TPM if not exists
-    local tpm_dir="$HOME/.tmux/plugins/tpm"
+    # Create plugins symlink and install
+    local plugins_dir="$HOME/.tmux/plugins"
+    local tpm_dir="$plugins_dir/tpm"
+    
+    # Create symlink to local plugins directory
+    create_symlink "$DOTFILES_DIR/tmux/plugins" "$plugins_dir"
+    
     if [[ ! -d "$tpm_dir" ]]; then
         print_status "Installing TPM (Tmux Plugin Manager)..."
+        mkdir -p "$plugins_dir"
         git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+        
+        # Install other plugins
+        print_status "Installing tmux plugins..."
+        "$tpm_dir/bin/install_plugins"
     else
         print_status "TPM already installed"
     fi
