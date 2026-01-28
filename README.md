@@ -7,6 +7,7 @@ This repository contains configuration files for my Linux development environmen
 - `nvim/` - Neovim configuration
 - `tmux/` - Tmux configuration
 - `tmux.conf` - Main tmux configuration file
+- `zsh/` - Zsh configuration and plugins
 
 ## Installation
 
@@ -33,7 +34,31 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # Install plugins (prefix + I)
 ```
 
+### Zsh
+```bash
+# Backup existing config
+mv ~/.zshrc ~/.zshrc.backup 2>/dev/null || true
+mv ~/.zshenv ~/.zshenv.backup 2>/dev/null || true
+
+# Create symlinks
+ln -s $(pwd)/zsh/.zshrc ~/.zshrc
+ln -s $(pwd)/zsh/.zshenv ~/.zshenv
+
+# Install Oh My Zsh (if not installed)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# Clone zsh plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/zsh-syntax-highlighting
+```
+
 ## Plugin List
+
+### Zsh Plugins
+- ohmyzsh/ohmyzsh - Zsh framework
+- zsh-users/zsh-autosuggestions - Command autosuggestions
+- zsh-users/zsh-syntax-highlighting - Syntax highlighting
+- Custom theme: agnosterzak
 
 ### Tmux Plugins
 - tmux-plugins/tpm - Plugin manager

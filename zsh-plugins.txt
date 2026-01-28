@@ -1,0 +1,8 @@
+# Zsh plugins for Oh My Zsh
+# These will be installed by the install script
+
+# External plugins
+zsh-autosuggestions
+zsh-syntax-highlighting
+
+# Custom plugins (place in plugins/)

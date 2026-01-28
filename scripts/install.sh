@@ -85,6 +85,53 @@ install_tmux() {
     fi
 }
 
+# Install Zsh configuration
+install_zsh() {
+    print_status "Installing Zsh configuration..."
+    
+    local zshrc="$HOME/.zshrc"
+    local zshenv="$HOME/.zshenv"
+    local src_zshrc="$DOTFILES_DIR/zsh/.zshrc"
+    local src_zshenv="$DOTFILES_DIR/zsh/.zshenv"
+    
+    # Create symlinks for zsh config
+    create_symlink "$src_zshrc" "$zshrc"
+    create_symlink "$src_zshenv" "$zshenv"
+    
+    # Install Oh My Zsh if not exists
+    local oh_my_zsh_dir="$HOME/.oh-my-zsh"
+    if [[ ! -d "$oh_my_zsh_dir" ]]; then
+        print_status "Installing Oh My Zsh..."
+        RUN_ZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
+    else
+        print_status "Oh My Zsh already installed"
+    fi
+    
+    # Install zsh plugins
+    local zsh_plugins_dir="$HOME/.zsh"
+    create_symlink "$DOTFILES_DIR/zsh/z" "$zsh_plugins_dir/z"
+    
+    # Clone external plugins if they don't exist
+    if [[ ! -d "$zsh_plugins_dir/zsh-autosuggestions" ]]; then
+        print_status "Installing zsh-autosuggestions..."
+        git clone https://github.com/zsh-users/zsh-autosuggestions "$zsh_plugins_dir/zsh-autosuggestions"
+    fi
+    
+    if [[ ! -d "$zsh_plugins_dir/zsh-syntax-highlighting" ]]; then
+        print_status "Installing zsh-syntax-highlighting..."
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_plugins_dir/zsh-syntax-highlighting"
+    fi
+    
+    # Copy custom configurations to oh-my-zsh
+    if [[ -d "$DOTFILES_DIR/zsh/plugins" ]]; then
+        create_symlink "$DOTFILES_DIR/zsh/plugins" "$oh_my_zsh_dir/custom/plugins"
+    fi
+    
+    if [[ -d "$DOTFILES_DIR/zsh/themes" ]]; then
+        create_symlink "$DOTFILES_DIR/zsh/themes" "$oh_my_zsh_dir/custom/themes"
+    fi
+}
+
 # Main installation
 main() {
     print_status "Starting dotfiles installation..."
@@ -104,11 +151,13 @@ main() {
     # Install configurations
     install_neovim
     install_tmux
+    install_zsh
     
     print_status "Installation completed!"
     print_warning "Don't forget to:"
     print_warning "1. Open tmux and press prefix + I to install plugins"
     print_warning "2. Open neovim and run :Lazy to install plugins"
+    print_warning "3. Restart your shell or run: source ~/.zshrc"
 }
 
 # Run main function
